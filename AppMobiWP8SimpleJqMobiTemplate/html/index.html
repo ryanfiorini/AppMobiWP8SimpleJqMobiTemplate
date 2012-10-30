@@ -1,0 +1,99 @@
+<!DOCTYPE html><!--HTML5 doctype-->
+<html>
+    <head>
+        <title>Your WP8 App</title>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8"> 
+        <meta name="viewport" content="width=770" />
+        <script>
+            window.external.notify("logger:Loading index.html");
+        </script>
+
+        <link href="css/icons.css" rel="stylesheet" type="text/css">
+        <link href="css/jq.ui.css" rel="stylesheet" type="text/css">
+
+        <script type="text/javascript" charset="utf-8" src="_appMobi/appmobi_local_bootstrap.js"></script>
+
+        <script type="text/javascript" charset="utf-8" src="_appMobi/jq.mobi.js"></script>
+        <script type="text/javascript" charset="utf-8" src="_appMobi/jq.desktopBrowsers.js" ></script>
+        <script type="text/javascript" charset="utf-8" src="_appMobi/jq.ui.js" ></script>
+        
+        <script>
+            /* This code is used to run as soon as appMobi activates */
+            var onDeviceReadyStrap = function () {
+                window.external.notify("logger:in onDeviceReadyStrap: ");
+                setTimeout("onDeviceReady();", 1500);
+            }
+
+            var onDeviceReady = function () {
+                window.external.notify("logger:in onDeviceReady");
+
+                AppMobi.device.setAutoRotate(false);
+                AppMobi.device.setRotateOrientation("landscape");
+                //AppMobi.display.lockViewportWindow(768, 1004, 1024, 748);
+            };
+            document.addEventListener("appMobi.device.ready", onDeviceReadyStrap, false);
+
+        </script>
+        <style type="text/css">
+            a.c5 {color:white}
+            div.c4 {display: none;}
+            ul.c3 {width: 100%; float: left;}
+            div.c2 {display: none; float: left}
+            div.c1 {display: block;}
+        </style>
+    </head>
+    <body>
+        <div id="jQUi">
+           <div id="header">
+           </div>
+
+            <div id="content">
+                <div class="panel" title="Main" data-footer="footer_0" data-nav="nav_0" id="page_0" selected="true">
+                    Welcome to the Windows Phone 8 - jqMobi Simple Sample
+                </div>
+
+                <div class="panel" title="INFO" data-footer="info_footer" data-nav="nav_0" id="info_page" data-position="static">
+                    Put Info about your app Here
+                </div>
+
+                <div class="panel" title="HELP" data-footer="help_footer" data-nav="nav_0" id="help_page">
+                    <ul data-position="static" class="edit-data">
+                        <li>
+                            <a href="#">Help Topic 1</a>
+                        </li>
+
+                        <li>
+                            <a href="#">Help Topic 2</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="navbar">
+                <a href="#info_page" class="icon info" data-transition="slide">Info</a><a href="#help_page" class="icon question" data-transition="up">Help</a>
+            </div>
+
+            <footer id="footer_0">
+                <a href="#info_page" class="icon info" data-transition="slide">Info</a><a href="#help_page" class="icon question" data-transition="up">Help</a>
+            </footer>
+
+            <nav id="nav_0">
+                <h1>
+                    Side Menu
+                </h1>
+                <br>
+                <a href="#page_0" class="c5" data-transition="slide">Home Page</a><br>
+                <a href="#info_page" class="c5" data-transition="slide">Info Page</a><br>
+                <a href="#help_page" class="c5" data-transition="up">Help Page</a>
+            </nav>
+
+            <footer id="info_footer">
+                <a href="#page_0" class="icon home" data-transition="slide">Home</a><a href="#help_page" class="icon question" data-transition="up">Help</a>
+            </footer>
+
+            <footer id="help_footer">
+                <a href="#page_0" class="icon home" data-transition="slide">Home</a><a href="#info_page" class="icon info" data-transition="slide">Info</a>
+            </footer>
+        </div>
+    </body>
+</html>
