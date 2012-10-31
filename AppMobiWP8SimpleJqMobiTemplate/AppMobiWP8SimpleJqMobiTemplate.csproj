@@ -165,10 +165,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="appMobiWebViewWP8, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\AppMobiWebViewWP8.1.0.2\lib\appMobiWebViewWP8.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\..\appMobiWebViewWP8\appMobiWebViewWP8.csproj">
+      <Project>{F8A6FAF7-CFD4-4E10-AF82-B72281646A65}</Project>
+      <Name>appMobiWebViewWP8</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />

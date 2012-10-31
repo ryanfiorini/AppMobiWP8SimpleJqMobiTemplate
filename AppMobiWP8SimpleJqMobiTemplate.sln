@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppMobiWP8SimpleJqMobiTemplate", "AppMobiWP8SimpleJqMobiTemplate\AppMobiWP8SimpleJqMobiTemplate.csproj", "{7B301EA4-A340-4879-B02E-4744C9C45A8A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "appMobiWebViewWP8", "..\appMobiWebViewWP8\appMobiWebViewWP8.csproj", "{F8A6FAF7-CFD4-4E10-AF82-B72281646A65}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,6 +33,18 @@ Global
 		{7B301EA4-A340-4879-B02E-4744C9C45A8A}.Release|x86.ActiveCfg = Release|x86
 		{7B301EA4-A340-4879-B02E-4744C9C45A8A}.Release|x86.Build.0 = Release|x86
 		{7B301EA4-A340-4879-B02E-4744C9C45A8A}.Release|x86.Deploy.0 = Release|x86
+		{F8A6FAF7-CFD4-4E10-AF82-B72281646A65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8A6FAF7-CFD4-4E10-AF82-B72281646A65}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8A6FAF7-CFD4-4E10-AF82-B72281646A65}.Debug|ARM.ActiveCfg = Debug|ARM
+		{F8A6FAF7-CFD4-4E10-AF82-B72281646A65}.Debug|ARM.Build.0 = Debug|ARM
+		{F8A6FAF7-CFD4-4E10-AF82-B72281646A65}.Debug|x86.ActiveCfg = Debug|x86
+		{F8A6FAF7-CFD4-4E10-AF82-B72281646A65}.Debug|x86.Build.0 = Debug|x86
+		{F8A6FAF7-CFD4-4E10-AF82-B72281646A65}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8A6FAF7-CFD4-4E10-AF82-B72281646A65}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8A6FAF7-CFD4-4E10-AF82-B72281646A65}.Release|ARM.ActiveCfg = Release|ARM
+		{F8A6FAF7-CFD4-4E10-AF82-B72281646A65}.Release|ARM.Build.0 = Release|ARM
+		{F8A6FAF7-CFD4-4E10-AF82-B72281646A65}.Release|x86.ActiveCfg = Release|x86
+		{F8A6FAF7-CFD4-4E10-AF82-B72281646A65}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

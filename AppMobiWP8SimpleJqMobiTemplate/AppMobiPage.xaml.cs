@@ -14,7 +14,7 @@ namespace AppMobiWP8SimpleJqMobiTemplate
     public partial class AppMobiPage : PhoneApplicationPage
     {
         public appMobiWebView amWebView;
-        
+
         public AppMobiPage()
         {
             InitializeComponent();
