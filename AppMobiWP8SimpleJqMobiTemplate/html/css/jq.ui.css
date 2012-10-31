@@ -156,6 +156,9 @@ body {
 #jQUi #navbar a:not(:last-of-type) {
   border-right: 1px solid #000000;
 }
+    #jQUi #navbar .icon {
+        font-size:25px;
+    }
 #jQUi #navbar .icon:before {
   position: absolute;
   top: -10px;

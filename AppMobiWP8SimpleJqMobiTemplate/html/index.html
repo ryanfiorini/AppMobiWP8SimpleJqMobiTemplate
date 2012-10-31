@@ -8,7 +8,7 @@
             window.external.notify("logger:Loading index.html");
         </script>
 
-        <link href="css/icons.css" rel="stylesheet" type="text/css">
+        <!--<link href="css/icons.css" rel="stylesheet" type="text/css">-->
         <link href="css/jq.ui.css" rel="stylesheet" type="text/css">
 
         <style type="text/css">
@@ -44,6 +44,12 @@
             };
             document.addEventListener("appMobi.device.ready", onDeviceReadyStrap, false);
 
+            var onOrientationChange = function () {
+                window.external.notify("logger: in onOrientationChange");
+
+                // do what you like here
+            };
+            document.addEventListener("appMobi.device.orientation.change", onOrientationChange, false);
         </script>
     </head>
     <body>
