@@ -129,6 +129,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="AppMobiWebSource.xml" />
     <Content Include="Assets\AlignmentGrid.png" />
     <Content Include="Assets\ApplicationIcon.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -157,6 +158,7 @@
     <Content Include="html\_appMobi\jq.mobi.js" />
     <Content Include="html\_appMobi\jq.mobi.min.js" />
     <Content Include="html\_appMobi\jq.ui.js" />
+    <Content Include="readme.txt" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\AppResources.resx">
