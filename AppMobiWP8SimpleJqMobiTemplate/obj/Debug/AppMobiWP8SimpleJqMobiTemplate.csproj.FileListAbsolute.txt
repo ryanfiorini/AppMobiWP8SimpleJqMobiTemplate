@@ -42,3 +42,4 @@ C:\Users\Ryan\Documents\GitHub\AppMobiWP8SimpleJqMobiTemplate\AppMobiWP8SimpleJq
 C:\Users\Ryan\Documents\GitHub\AppMobiWP8SimpleJqMobiTemplate\AppMobiWP8SimpleJqMobiTemplate\obj\Debug\AppMobiWP8SimpleJqMobiTemplate.dll
 C:\Users\Ryan\Documents\GitHub\AppMobiWP8SimpleJqMobiTemplate\AppMobiWP8SimpleJqMobiTemplate\obj\Debug\AppMobiWP8SimpleJqMobiTemplate.pdb
 C:\Users\Ryan\Documents\GitHub\AppMobiWP8SimpleJqMobiTemplate\AppMobiWP8SimpleJqMobiTemplate\obj\Debug\XapCacheFile.xml
+C:\Users\Ryan\SkyDrive\Development\window8\AppMobiWP8SimpleJqMobiTemplate\AppMobiWP8SimpleJqMobiTemplate\Bin\Debug\html\css\icons-webfont.eot

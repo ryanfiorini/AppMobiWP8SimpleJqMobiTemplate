@@ -4,11 +4,7 @@
         <title>Your WP8 App</title>
         <meta http-equiv="Content-type" content="text/html; charset=utf-8"> 
 
-        <script>
-            window.external.notify("logger:Loading index.html");
-        </script>
-
-        <link href="css/icons.css" rel="stylesheet" type="text/css">
+        <!--<link href="css/icons.css" rel="stylesheet" type="text/css">-->
         <link href="css/jq.ui.css" rel="stylesheet" type="text/css">
 
         <style type="text/css">
@@ -29,14 +25,24 @@
         <script type="text/javascript" charset="utf-8" src="_appMobi/jq.ui.js" ></script>
         
         <script>
+            // *** AppMobi.debug.log("") to display messages in the VS 2012 output window. ***
+            // For debugging purposes (This will save your life)
+            window.onerror = function myErrorHandler(errorMsg, url, lineNumber) {
+                AppMobi.debug.log("--------------------");
+                AppMobi.debug.log("onerror: errorMsg: " + errorMsg);
+                AppMobi.debug.log("onerror: url: " + url);
+                AppMobi.debug.log("onerror: lineNumber: " + lineNumber);
+                AppMobi.debug.log("--------------------");
+            }
+
             /* This code is used to run as soon as appMobi activates */
             var onDeviceReadyStrap = function () {
-                window.external.notify("logger:in onDeviceReadyStrap: ");
+                AppMobi.debug.log("in onDeviceReadyStrap: ");
                 setTimeout("onDeviceReady();", 1500);
             }
 
             var onDeviceReady = function () {
-                window.external.notify("logger:in onDeviceReady");
+                AppMobi.debug.log("in onDeviceReady");
 
                 AppMobi.device.setAutoRotate(false);
                 //AppMobi.device.setRotateOrientation("landscape");
@@ -45,7 +51,7 @@
             document.addEventListener("appMobi.device.ready", onDeviceReadyStrap, false);
 
             var onOrientationChange = function () {
-                window.external.notify("logger: in onOrientationChange");
+                AppMobi.debug.log("in onOrientationChange");
 
                 // do what you like here
             };

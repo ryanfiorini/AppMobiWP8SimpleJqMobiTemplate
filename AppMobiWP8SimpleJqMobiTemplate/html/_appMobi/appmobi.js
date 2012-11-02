@@ -1,5 +1,3 @@
-window.external.notify("logger:in appmobi.js");
-
 if (typeof (AppMobiInit) != 'object')
     AppMobiInit = {};
 
@@ -1042,6 +1040,7 @@ AppMobi.Debug.prototype.processMessage = function (message) {
  * @param {Object|String} message Message or object to print to the console
  */
 AppMobi.Debug.prototype.log = function (message) {
+    window.external.notify("logger: " + message);
     console.log(message);
 };
 
@@ -1171,7 +1170,6 @@ AppMobi.Device.prototype.setAutoRotate = function (shouldAutoRotate) {
 };
 
 AppMobi.Device.prototype.setRotateOrientation = function (orientation) {
-    window.external.notify("logger: setRotateOrientation");
     window.external.notify("ORIENTATION:" + orientation);
 };
 
@@ -1449,7 +1447,6 @@ AppMobi.Display.prototype.updateViewportContent = function (content) {
 }
 
 AppMobi.Display.prototype.updateViewportOrientation = function (orientation) {
-    window.external.notify("logger: updateViewportOrientation: " + orientation);
     var width;
     if (orientation == 0 || orientation == 180) {
         width = AppMobi.display.viewport.portraitWidth;
@@ -1462,7 +1459,6 @@ AppMobi.Display.prototype.updateViewportOrientation = function (orientation) {
 }
 
 AppMobi.Display.prototype.viewportOrientationListener = function (e) {
-    window.external.notify("logger: viewportOrientationListener: " + e.orientation);
     AppMobi.display.updateViewportOrientation(AppMobi.device.orientation);
 }
 
@@ -1527,7 +1523,6 @@ AppMobi.Display.prototype.updateViewportContent = function (content) {
 }
 
 AppMobi.Display.prototype.updateViewportOrientation = function (orientation) {
-    window.external.notify("logger: updateViewportOrientation: " + orientation);
     var width;
     if (orientation == 0 || orientation == 180) {
         width = AppMobi.display.viewport.portraitWidth;

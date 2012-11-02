@@ -9,6 +9,7 @@
   <FilePath Value="html\_appMobi\jq.mobi.js"/>
   <FilePath Value="html\_appMobi\jq.ui.js"/>
 
+  <FilePath Value="html\css\icons-webfont.eot"/>
   <FilePath Value="html\css\icons.css"/>
   <FilePath Value="html\css\jq.ui.css"/>
 </AppMobiWebSource>

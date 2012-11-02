@@ -122,6 +122,9 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="html\css\icons-webfont.eot">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\AppManifest.xml" />
     <None Include="Properties\WMAppManifest.xml">
@@ -156,8 +159,8 @@
     <Content Include="html\_appMobi\appmobi_local_bootstrap.js" />
     <Content Include="html\_appMobi\jq.desktopBrowsers.js" />
     <Content Include="html\_appMobi\jq.mobi.js" />
-    <Content Include="html\_appMobi\jq.mobi.min.js" />
     <Content Include="html\_appMobi\jq.ui.js" />
+    <Content Include="icons.css" />
     <Content Include="readme.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -167,10 +170,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\appMobiWebViewWP8\appMobiWebViewWP8.csproj">
-      <Project>{F8A6FAF7-CFD4-4E10-AF82-B72281646A65}</Project>
-      <Name>appMobiWebViewWP8</Name>
-    </ProjectReference>
+    <Reference Include="appMobiWebViewWP8, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AppMobiWebViewWP8.1.0.9\lib\appMobiWebViewWP8.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />
