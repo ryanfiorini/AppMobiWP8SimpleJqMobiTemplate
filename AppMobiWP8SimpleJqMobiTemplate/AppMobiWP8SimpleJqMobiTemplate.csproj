@@ -134,6 +134,8 @@
   <ItemGroup>
     <Content Include="AppMobiWebSource.xml" />
     <Content Include="Assets\AlignmentGrid.png" />
+    <Content Include="Assets\AppBar\appbar.back.rest.png" />
+    <Content Include="Assets\AppBar\appbar.next.rest.png" />
     <Content Include="Assets\ApplicationIcon.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -160,6 +162,7 @@
     <Content Include="html\_appMobi\jq.desktopBrowsers.js" />
     <Content Include="html\_appMobi\jq.mobi.js" />
     <Content Include="html\_appMobi\jq.ui.js" />
+    <Content Include="html\_appMobi\xhr.js" />
     <Content Include="icons.css" />
     <Content Include="readme.txt" />
   </ItemGroup>
@@ -170,10 +173,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="appMobiWebViewWP8, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\AppMobiWebViewWP8.1.0.9\lib\appMobiWebViewWP8.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\..\appMobiWebViewWP8\appMobiWebViewWP8.csproj">
+      <Project>{F8A6FAF7-CFD4-4E10-AF82-B72281646A65}</Project>
+      <Name>appMobiWebViewWP8</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />

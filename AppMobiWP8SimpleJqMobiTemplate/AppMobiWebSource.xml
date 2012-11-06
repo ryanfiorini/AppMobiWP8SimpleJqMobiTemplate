@@ -8,6 +8,7 @@
   <FilePath Value="html\_appMobi\jq.desktopBrowsers.js"/>
   <FilePath Value="html\_appMobi\jq.mobi.js"/>
   <FilePath Value="html\_appMobi\jq.ui.js"/>
+  <FilePath Value="html\_appMobi\xhr.js"/>
 
   <FilePath Value="html\css\icons-webfont.eot"/>
   <FilePath Value="html\css\icons.css"/>

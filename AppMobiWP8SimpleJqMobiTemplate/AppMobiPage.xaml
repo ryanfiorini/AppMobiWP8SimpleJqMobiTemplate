@@ -19,10 +19,9 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <phone:WebBrowser  HorizontalAlignment="Stretch" 
+        <phone:WebBrowser HorizontalAlignment="Stretch" 
                    Margin="0,0,0,0"  
                    x:Name="webView" 
-                   VerticalAlignment="Stretch" IsScriptEnabled="True"/>
+                   VerticalAlignment="Stretch" IsScriptEnabled="True" />
     </Grid>
-
 </phone:PhoneApplicationPage>

@@ -87,6 +87,10 @@ AppMobi.addConstructor = function (func) {
  * @param {String[]} [args] Zero or more arguments to pass to the method
  */
 AppMobi.exec = function () {
+    AppMobi.queue.commands.push(arguments);
+
+    if (AppMobi.queue.timer == null)
+        AppMobi.queue.timer = setInterval(AppMobi.run_command, 10);
 };
 
 /**
@@ -95,6 +99,56 @@ AppMobi.exec = function () {
  * @private
  */
 AppMobi.run_command = function () {
+    if (!AppMobi.available || !AppMobi.queue.ready) {
+        return;
+    }
+
+    AppMobi.queue.ready = false;
+
+    var args = AppMobi.queue.commands.shift();
+
+    if (AppMobi.queue.commands.length == 0) {
+        clearInterval(AppMobi.queue.timer);
+        AppMobi.queue.timer = null;
+    }
+
+    var uri = [];
+    var dict = null;
+
+
+    for (var i = 1; i < args.length; i++) {
+        var arg = args[i];
+
+        if (arg == undefined || arg == null)
+            arg = '';
+
+        if (typeof (arg) == 'object')
+            dict = arg;
+        else
+            uri.push(encodeURIComponent(arg));
+
+    }
+
+    //var url = "appmobi://" + args[0] + "/" + uri.join("/") + "/";
+    var url = "" + args[0] + "~" + uri.join("~") + "~";
+
+    if (dict != null) {
+        var query_args = [];
+
+        for (var name in dict) {
+            if (typeof (name) != 'string')
+                continue;
+            query_args.push(encodeURIComponent(name) + "=" + encodeURIComponent(dict[name]));
+        }
+
+        if (query_args.length > 0)
+            url += "?" + query_args.join("&");
+
+    }
+
+    //document.location = url;
+    AppMobi.debug.log("url: " + url);
+    window.external.notify(url);
 };
 
 /**
@@ -1076,7 +1130,7 @@ AppMobi.Device = function () {
     this.initialOrientation = "";
     this.appmobiversion = AppMobi.jsVersion;
     this.phonegapversion = "";
-    this.orientation = 90;
+    this.orientation = 0;
     this.connection = "NET";
     this.density = "";
     this.lastPlaying = "";
@@ -1237,18 +1291,62 @@ AppMobi.Device.prototype.setOrientation = function (orientation) {
 };
 
 AppMobi.Device.prototype.getRemoteDataImpl = function (requestUrl, requestMethod, requestBody, successCallback, errorCallback, id, hasId) {
+    //validate parameters
+    if (
+    (requestUrl == undefined || requestUrl == '') ||
+    (requestMethod == undefined || requestMethod == '' || (requestMethod.toUpperCase() != 'GET' && requestMethod.toUpperCase() != 'POST')) ||
+    (successCallback == undefined || successCallback == '') ||
+    (errorCallback == undefined || errorCallback == '')
+    ) {
+        throw (new Error("Error: AppMobi.device.getRemoteData has the following required parameters: requestUrl, requestMethod, requestBody, successCallback, errorCallback.  requestMethod must be either GET or POST.  requestBody is ignored for GET requests."));
+    }
+
+    if (typeof (successCallback) != "string") throw (new Error("Error: AppMobi.device.getRemoteData successCallback parameter must be a string which is the name of a function"));
+    if (typeof (errorCallback) != "string") throw (new Error("Error: AppMobi.device.getRemoteData errorCallback parameter must be a string which is the name of a function"));
+
+    if (requestBody == undefined) requestBody = "";
+
+    AppMobi.exec("REMOTEDATA", requestUrl, requestMethod, requestBody, successCallback, errorCallback, id, hasId);
 };
 
 AppMobi.Device.prototype.getRemoteDataWithId = function (requestUrl, requestMethod, requestBody, successCallback, errorCallback, id) {
+    AppMobi.device.getRemoteDataImpl(requestUrl, requestMethod, requestBody, successCallback, errorCallback, id, true);
 };
 
 AppMobi.Device.prototype.getRemoteDataWithID = function (requestUrl, requestMethod, requestBody, successCallback, errorCallback, id) {
+    AppMobi.device.getRemoteDataImpl(requestUrl, requestMethod, requestBody, successCallback, errorCallback, id, true);
 };
 
 AppMobi.Device.prototype.getRemoteData = function (requestUrl, requestMethod, requestBody, successCallback, errorCallback) {
+    AppMobi.device.getRemoteDataImpl(requestUrl, requestMethod, requestBody, successCallback, errorCallback, "", false);
 };
 
 AppMobi.Device.prototype.getRemoteDataExt = function (parameters) {
+    AppMobi.debug.log("in AppMobi.Device.prototype.getRemoteDataExt: url: " + parameters.url);
+    AppMobi.debug.log("in AppMobi.Device.prototype.getRemoteDataExt: id: " + parameters.id);
+    AppMobi.debug.log("in AppMobi.Device.prototype.getRemoteDataExt: method: " + parameters.method);
+    AppMobi.debug.log("in AppMobi.Device.prototype.getRemoteDataExt: body: " + parameters.body);
+    AppMobi.debug.log("in AppMobi.Device.prototype.getRemoteDataExt: headers: " + parameters.headers);
+
+    if (parameters == undefined) {
+        throw (new Error("Error: AppMobi.device.getRemoteDataExt: parameters is required."));
+    }
+
+    if (parameters.hasOwnProperty("url") == false || parameters.hasOwnProperty("id") == false || parameters.hasOwnProperty("method") == false
+      || parameters.hasOwnProperty("body") == false || parameters.hasOwnProperty("headers") == false) {
+        throw (new Error("Error: AppMobi.device.getRemoteDataExt: invalid parameters object. Initialize using 'new AppMobi.Device.RemoteDataParameters'."));
+    }
+
+    if (parameters.url == undefined || parameters.url == '') {
+        throw (new Error("Error: AppMobi.device.getRemoteDataExt requires a url property."));
+    }
+
+    if (parameters.method == undefined || (parameters.method.toUpperCase() != 'GET' && parameters.method.toUpperCase() != 'POST')) {
+        throw (new Error("Error: AppMobi.device.getRemoteDataExt requires a method property of GET or POST. body is ignored for GET requests."));
+    }
+
+    AppMobi.exec("REMOTEDATA", parameters.url, parameters.id, parameters.method, parameters.body, parameters.headers);
+    //window.external.notify("remoteDataExt");
 };
 
 AppMobi.Device.prototype.installUpdate = function () {
@@ -1428,35 +1526,6 @@ AppMobi.Display.prototype.startAR = function () {
 AppMobi.Display.prototype.stopAR = function () {
 };
 
-AppMobi.Display.prototype.updateViewportContent = function (content) {
-    //get reference to head
-    var head, heads = AppMobi.display.doc.getElementsByTagName('head');
-    if (heads.length > 0) head = heads[0];
-    else return;
-    //remove any viewport meta tags
-    var metas = AppMobi.display.doc.getElementsByTagName('meta');
-    for (var i = 0; i < metas.length; i++) {
-        if (metas[i].name == 'viewport') try { head.removeChild(metas[i]); } catch (e) { }
-    }
-    //add the new viewport meta tag
-    var viewport = AppMobi.display.doc.createElement('meta');
-    viewport.setAttribute('name', 'viewport');
-    viewport.setAttribute('id', 'viewport');
-    viewport.setAttribute('content', content);
-    head.appendChild(viewport);
-}
-
-AppMobi.Display.prototype.updateViewportOrientation = function (orientation) {
-    var width;
-    if (orientation == 0 || orientation == 180) {
-        width = AppMobi.display.viewport.portraitWidth;
-    } else {
-        width = AppMobi.display.viewport.landscapeWidth;
-    }
-    var content = "width=" + width + ",maximum-scale=10.0,user-scalable=no";
-    //AppMobi.debug.log("****"+content);
-    AppMobi.display.updateViewportContent(content);
-}
 
 AppMobi.Display.prototype.viewportOrientationListener = function (e) {
     AppMobi.display.updateViewportOrientation(AppMobi.device.orientation);
@@ -1505,21 +1574,32 @@ AppMobi.Display.prototype.lockViewportWindow = function (portwidth, portheight, 
 }
 
 AppMobi.Display.prototype.updateViewportContent = function (content) {
+    AppMobi.debug.log("content: " + content);
+    content += "";
+    if (content.indexOf("px") === -1)
+        content += "px";
     //get reference to head
     var head, heads = AppMobi.display.doc.getElementsByTagName('head');
     if (heads.length > 0) head = heads[0];
     else return;
     //remove any viewport meta tags
     var metas = AppMobi.display.doc.getElementsByTagName('meta');
+    AppMobi.debug.log("metas.length: " + metas.length);
     for (var i = 0; i < metas.length; i++) {
         if (metas[i].name == 'viewport') try { head.removeChild(metas[i]); } catch (e) { }
     }
     //add the new viewport meta tag
-    var viewport = AppMobi.display.doc.createElement('meta');
-    viewport.setAttribute('name', 'viewport');
-    viewport.setAttribute('id', 'viewport');
-    viewport.setAttribute('content', content);
-    head.appendChild(viewport);
+    var elem = document.getElementById("appMobi_viewport");
+    if (elem) {
+        AppMobi.debug.log("Removing old viewport");
+        elem.parentNode.removeChild(elem);
+    }
+    var viewPortCss = document.createElement("style");
+    viewPortCss.id = "appMobi_viewport";
+    viewPortCss.innerHTML = "@-ms-viewport{width: " + content + ";}";
+    viewPortCss.innerHTML += "@viewport {zoom:1;max-zoom:1;min-zoom:1;user-zoom:zoom;}";
+    head.appendChild(viewPortCss);
+    window.external.notify("REDRAW");
 }
 
 AppMobi.Display.prototype.updateViewportOrientation = function (orientation) {
@@ -1530,8 +1610,11 @@ AppMobi.Display.prototype.updateViewportOrientation = function (orientation) {
         width = AppMobi.display.viewport.landscapeWidth;
     }
     var content = "width=" + width + ",maximum-scale=10.0,user-scalable=no";
+    AppMobi.debug.log("orientation: " + orientation);
+    AppMobi.debug.log("portraitWidth: " + AppMobi.display.viewport.portraitWidth);
+    AppMobi.debug.log("landscapeWidth: " + AppMobi.display.viewport.landscapeWidth);
     //AppMobi.debug.log("****"+content);
-    AppMobi.display.updateViewportContent(content);
+    AppMobi.display.updateViewportContent(width);
 }
 
 if (typeof AppMobi.display == "undefined") AppMobi.display = new AppMobi.Display();

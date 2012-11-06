@@ -19,7 +19,7 @@ namespace AppMobiWP8SimpleJqMobiTemplate
         {
             InitializeComponent();
 
-            amWebView = new appMobiWebView(webView, phoneApplicationPage, "html/index.html");
+            amWebView = new appMobiWebView(webView, phoneApplicationPage, "http://localhost:5888/index.html");
         }
     }
 }
