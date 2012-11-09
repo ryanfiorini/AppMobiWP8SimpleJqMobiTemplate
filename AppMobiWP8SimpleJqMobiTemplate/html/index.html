@@ -27,29 +27,19 @@
         <script type="text/javascript" charset="utf-8" src="_appMobi/jq.mobi.js"></script>
         <script type="text/javascript" charset="utf-8" src="_appMobi/jq.desktopBrowsers.js" ></script>
         <script type="text/javascript" charset="utf-8" src="_appMobi/jq.ui.js" ></script>
+
+        <script type="text/javascript" charset="utf-8" src="_appMobi/window.js" ></script>
         
         <script>
-            // *** AppMobi.debug.log("") to display messages in the VS 2012 output window. ***
-            // For debugging purposes (This will save your life)
-            window.onerror = function myErrorHandler(errorMsg, url, lineNumber) {
-                AppMobi.debug.log("--------------------");
-                AppMobi.debug.log("onerror: errorMsg: " + errorMsg);
-                AppMobi.debug.log("onerror: url: " + url);
-                AppMobi.debug.log("onerror: lineNumber: " + lineNumber);
-                AppMobi.debug.log("--------------------");
-            }
-
             /* This code is used to run as soon as appMobi activates */
             var onDeviceReadyStrap = function () {
-                AppMobi.debug.log("in onDeviceReadyStrap: ");
+                // *** console.log("") to display messages in the Visual Studio Output Window. ***
+                console.log("in onDeviceReadyStrap: ");
                 setTimeout("onDeviceReady();", 1500);
             }
 
             var onDeviceReady = function () {
-                AppMobi.debug.log("in onDeviceReady");
-
-                // IE does NOT provide an alert method, you can patch it with this line after deviceready.
-                window.alert = window.alert || navigator.notification.alert;
+                console.log("in onDeviceReady");
 
                 var orientation = "portrait";  // portrait or landscape
                 var portraitWidth = 320;
@@ -62,7 +52,7 @@
             document.addEventListener("appMobi.device.ready", onDeviceReadyStrap, false);
 
             var onOrientationChange = function () {
-                AppMobi.debug.log("in onOrientationChange");
+                console.log("in onOrientationChange");
 
                 // do what you like here
             };

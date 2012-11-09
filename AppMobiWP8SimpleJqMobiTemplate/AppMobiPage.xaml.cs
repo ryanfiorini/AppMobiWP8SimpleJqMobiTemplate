@@ -19,6 +19,10 @@ namespace AppMobiWP8SimpleJqMobiTemplate
         {
             InitializeComponent();
 
+            // phone:WebBrowser will serve up the files
+            //amWebView = new appMobiWebView(webView, phoneApplicationPage, "html/index.html");
+
+            // appMobiServer will serve up the files
             amWebView = new appMobiWebView(webView, phoneApplicationPage, "http://localhost:5888/index.html");
         }
     }
