@@ -87,30 +87,7 @@ AppMobi.addConstructor = function (func) {
  * @param {String[]} [args] Zero or more arguments to pass to the method
  */
 AppMobi.exec = function () {
-    AppMobi.queue.commands.push(arguments);
-
-    if (AppMobi.queue.timer == null)
-        AppMobi.queue.timer = setInterval(AppMobi.run_command, 10);
-};
-
-/**
- * Internal function used to dispatch the request to AppMobi.  This needs to be implemented per-platform to
- * ensure that methods are called on the phone in a way appropriate for that device.
- * @private
- */
-AppMobi.run_command = function () {
-    if (!AppMobi.available || !AppMobi.queue.ready) {
-        return;
-    }
-
-    AppMobi.queue.ready = false;
-
-    var args = AppMobi.queue.commands.shift();
-
-    if (AppMobi.queue.commands.length == 0) {
-        clearInterval(AppMobi.queue.timer);
-        AppMobi.queue.timer = null;
-    }
+    var args = arguments;
 
     var uri = [];
     var dict = null;
@@ -130,7 +107,8 @@ AppMobi.run_command = function () {
     }
 
     //var url = "appmobi://" + args[0] + "/" + uri.join("/") + "/";
-    var url = "" + args[0] + "~" + uri.join("~") + "~";
+    //var url = "" + args[0] + "~" + uri.join("~") + "~";
+    var url = "" + args[0] + "~" + uri.join("~");
 
     if (dict != null) {
         var query_args = [];
@@ -149,6 +127,15 @@ AppMobi.run_command = function () {
     //document.location = url;
     AppMobi.debug.log("url: " + url);
     window.external.notify(url);
+    AppMobi.queue.ready = true;
+};
+
+/**
+ * Internal function used to dispatch the request to AppMobi.  This needs to be implemented per-platform to
+ * ensure that methods are called on the phone in a way appropriate for that device.
+ * @private
+ */
+AppMobi.run_command = function () {
 };
 
 /**
@@ -160,6 +147,22 @@ AppMobi.run_command = function () {
  * @param {boolean} doRotate If true, rotate axes based on device rotation.
  */
 AppMobi.Acceleration = function (x, y, z, doRotate) {
+    if (doRotate) {
+        var orientation = AppMobi.device.orientation;
+        if (orientation == 0) {
+            //portrait
+        } else if (orientation == 90) {
+            //landscape left
+            var temp = y, y = -x, x = temp;
+        } else if (orientation == 180) {
+            //upside-down portrait
+            x = -x, y = -y;
+        } else if (orientation == -90) {
+            //landscape right
+            var temp = x, x = -y, y = temp;
+        }
+    }
+
     /**
 	 * The force applied by the device in the x-axis.
 	 */
@@ -205,6 +208,19 @@ AppMobi.Accelerometer = function () {
  * such as timeout.
  */
 AppMobi.Accelerometer.prototype.getCurrentAcceleration = function (successCallback, options) {
+    // If the acceleration is available then call success
+    // If the acceleration is not available then call error
+
+    //validate options object
+    var _options = new AppMobi.AccelerationOptions();
+    if (typeof (options) == "object") {
+        if (typeof (options.adjustForRotation) == "boolean") _options.adjustForRotation = options.adjustForRotation;
+    }
+    // Created for iPhone, Iphone passes back _accel obj litteral
+    if (typeof successCallback == "function") {
+        var accel = new AppMobi.Acceleration(AppMobi._accel.x, AppMobi._accel.y, AppMobi._accel.z, _options.adjustForRotation);
+        successCallback(accel);
+    }
 }
 
 /**
@@ -215,6 +231,20 @@ AppMobi.Accelerometer.prototype.getCurrentAcceleration = function (successCallba
  * such as timeout.
  */
 AppMobi.Accelerometer.prototype.watchAcceleration = function (successCallback, options) {
+    //validate options object
+    var _options = new AppMobi.AccelerationOptions();
+    if (typeof (options) == "object") {
+        var parsedFreq = parseInt(options.frequency);
+        if (typeof (parsedFreq) == "number" && !isNaN(parsedFreq)) {
+            _options.frequency = parsedFreq < 25 ? 25 : parsedFreq;
+        }
+        if (typeof (options.adjustForRotation) == "boolean") _options.adjustForRotation = options.adjustForRotation;
+    }
+    AppMobi.exec("AppMobiAccelerometer~Start~", _options.frequency);
+    AppMobi.accelerometer.getCurrentAcceleration(successCallback, _options);
+    return setInterval(function () {
+        AppMobi.accelerometer.getCurrentAcceleration(successCallback, _options);
+    }, _options.frequency);
 }
 
 /**
@@ -222,6 +252,8 @@ AppMobi.Accelerometer.prototype.watchAcceleration = function (successCallback, o
  * @param {String} watchId The ID of the watch returned from #watchAcceleration.
  */
 AppMobi.Accelerometer.prototype.clearWatch = function (watchId) {
+    AppMobi.exec("AppMobiAccelerometer~Stop~");
+    clearInterval(watchId);
 };
 
 if (typeof AppMobi.accelerometer == "undefined") AppMobi.accelerometer = new AppMobi.Accelerometer();
@@ -1094,6 +1126,7 @@ AppMobi.Debug.prototype.processMessage = function (message) {
  * @param {Object|String} message Message or object to print to the console
  */
 AppMobi.Debug.prototype.log = function (message) {
+    //window.external.notify("logger: " + message);
     console.log(message);
 };
 
@@ -1223,7 +1256,7 @@ AppMobi.Device.prototype.setAutoRotate = function (shouldAutoRotate) {
 };
 
 AppMobi.Device.prototype.setRotateOrientation = function (orientation) {
-    window.external.notify("ORIENTATION:" + orientation);
+    window.external.notify("~ORIENTATION~" + orientation);
 };
 
 AppMobi.Device.prototype.updateConnection = function () {
@@ -1305,7 +1338,7 @@ AppMobi.Device.prototype.getRemoteDataImpl = function (requestUrl, requestMethod
 
     if (requestBody == undefined) requestBody = "";
 
-    AppMobi.exec("REMOTEDATA", requestUrl, requestMethod, requestBody, successCallback, errorCallback, id, hasId);
+    AppMobi.exec("AppMobiDevice~REMOTEDATA~", requestUrl, requestMethod, requestBody, successCallback, errorCallback, id, hasId);
 };
 
 AppMobi.Device.prototype.getRemoteDataWithId = function (requestUrl, requestMethod, requestBody, successCallback, errorCallback, id) {
@@ -1344,7 +1377,7 @@ AppMobi.Device.prototype.getRemoteDataExt = function (parameters) {
         throw (new Error("Error: AppMobi.device.getRemoteDataExt requires a method property of GET or POST. body is ignored for GET requests."));
     }
 
-    AppMobi.exec("REMOTEDATA", parameters.url, parameters.id, parameters.method, parameters.body, parameters.headers);
+    AppMobi.exec("AppMobiDevice~GetRemoteData~", parameters.url, parameters.id, parameters.method, parameters.body, parameters.headers);
     //window.external.notify("remoteDataExt");
 };
 
@@ -1598,7 +1631,8 @@ AppMobi.Display.prototype.updateViewportContent = function (content) {
     viewPortCss.innerHTML = "@-ms-viewport{width: " + content + ";}";
     viewPortCss.innerHTML += "@viewport {zoom:1;max-zoom:1;min-zoom:1;user-zoom:zoom;}";
     head.appendChild(viewPortCss);
-    window.external.notify("REDRAW");
+    //window.external.notify("~REDRAW");
+    AppMobi.exec("~redraw~");
 }
 
 AppMobi.Display.prototype.updateViewportOrientation = function (orientation) {
