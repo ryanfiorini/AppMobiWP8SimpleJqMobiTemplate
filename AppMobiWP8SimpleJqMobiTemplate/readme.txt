@@ -17,9 +17,15 @@ Documentation	-  http://www.appmobi.com/documentation/index.php?DOC=JQMOBI_KS_WP
 Video			-  http://youtu.be/L_tz3juWzTk
 
 
+jqMobi github	- https://github.com/appMobi/jQ.Mobi
+				- Go here to check for bug fixes and updates
+
+
 Other appMobi WP8 Templates:
     Install-Package AppMobiWP8HelloWorldTemplate
 	Install-Package AppMobiWP8SampleGameTemplate
+	Install-Package AppMobiWP8AccelerometerTemplate
+	Install-Package AppMobiWP8SimpleJqMobiTemplate
 	Install-Package AppMobiWP8JqMobiKitchenSinkTemplate
 
 

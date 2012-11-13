@@ -15,7 +15,7 @@
     XMLHttpRequest.Extension = new Object;
 
     XMLHttpRequest.Extension.addObject = function (object) {
-        uniqueId = "xhrid_"+Math.floor(Math.random() * 99999999);
+        uniqueId = "xhrid_" + Math.floor(Math.random() * 99999999);
         object.uniqueId = uniqueId;
         this[uniqueId] = object;
         return uniqueId;
@@ -32,14 +32,14 @@
         myparams.id = data.uniqueId;
         myparams.method = data.requestData.method
         myparams.body = data.body;
-		try{
-		if(typeof myparams.body=="object"){
-		    myparams.body=JSON.stringify(myparams.body);
-		}
+        try {
+            if (typeof myparams.body == "object") {
+                myparams.body = JSON.stringify(myparams.body);
+            }
 
-        ajaxCallbacks[myparams.id] = this.handleResponseData;
-        AppMobi.device.getRemoteDataExt(myparams);
-		}
+            ajaxCallbacks[myparams.id] = this.handleResponseData;
+            AppMobi.device.getRemoteDataExt(myparams);
+        }
         catch (e) {
         }
     }
@@ -49,40 +49,38 @@
         var XMLObj = XMLHttpRequest.Extension[object.id];
         //EMULATED "HEADERS RECEIVED" CHANGES
         var newHeaders = [];
-	    if(object.success == false)
-	    {
-			XMLObj.response = null;
-			XMLObj.status = null;
-			XMLObj.responseText = null;
-			XMLObj.responseXML = null;
-			XMLObj.readyState = XMLObj.DONE;
+        if (object.success == false) {
+            XMLObj.response = null;
+            XMLObj.status = null;
+            XMLObj.responseText = null;
+            XMLObj.responseXML = null;
+            XMLObj.readyState = XMLObj.DONE;
 
-			if (typeof XMLObj.onerror == 'function') XMLObj.onerror();
-			if (typeof XMLObj.onreadystatechange == 'function') XMLObj.onreadystatechange();		
-	   }
-	   else
-	   {
-        for (var j in object.extras.headers) {
-            newHeaders[j.toLowerCase()] = object.extras.headers[j]; //jQuery looks for lowercase
-            newHeaders[j] = object.extras.headers[j];
+            if (typeof XMLObj.onerror == 'function') XMLObj.onerror();
+            if (typeof XMLObj.onreadystatechange == 'function') XMLObj.onreadystatechange();
         }
-        XMLObj.responseData.headers = newHeaders;
-        XMLObj.readyState = XMLObj.HEADERS_RECEIVED;
-        if (typeof XMLObj.onreadystatechange == 'function') XMLObj.onreadystatechange();
+        else {
+            for (var j in object.extras.headers) {
+                newHeaders[j.toLowerCase()] = object.extras.headers[j]; //jQuery looks for lowercase
+                newHeaders[j] = object.extras.headers[j];
+            }
+            XMLObj.responseData.headers = newHeaders;
+            XMLObj.readyState = XMLObj.HEADERS_RECEIVED;
+            if (typeof XMLObj.onreadystatechange == 'function') XMLObj.onreadystatechange();
 
-        XMLObj.readyState = XMLObj.LOADING;
-        if (typeof XMLObj.onreadystatechange == 'function') XMLObj.onreadystatechange();
+            XMLObj.readyState = XMLObj.LOADING;
+            if (typeof XMLObj.onreadystatechange == 'function') XMLObj.onreadystatechange();
 
-        XMLObj.response = object.response;
-        XMLObj.status = object.extras.status;
-        XMLObj.responseText = object.response;
-        XMLObj.responseXML = object.response;
-        XMLObj.readyState = XMLObj.DONE;
+            XMLObj.response = object.response;
+            XMLObj.status = object.extras.status;
+            XMLObj.responseText = object.response;
+            XMLObj.responseXML = object.response;
+            XMLObj.readyState = XMLObj.DONE;
 
-        if (typeof XMLObj.onreadystatechange == 'function') XMLObj.onreadystatechange();
-			if (typeof XMLObj.onloadstart == 'function') XMLObj.onloadstart();
-			if (typeof XMLObj.onload == 'function') XMLObj.onload();
-	   }
+            if (typeof XMLObj.onreadystatechange == 'function') XMLObj.onreadystatechange();
+            if (typeof XMLObj.onloadstart == 'function') XMLObj.onloadstart();
+            if (typeof XMLObj.onload == 'function') XMLObj.onload();
+        }
     }
 
 
@@ -123,10 +121,10 @@
     };
 
 
-    XMLHttpRequest.prototype.abort = function abort() {throw(new Error("abort() is not implemented in the AppMobi XMLHtppRequest object at this time."));};
-    XMLHttpRequest.prototype.addEventListener = function addEventListener(eventType, listener, useCapture) {throw(new Error("addEventListener() is not implemented in the AppMobi XMLHtppRequest object at this time."));};
-    XMLHttpRequest.prototype.constructor = function XMLHttpRequest() {};
-    XMLHttpRequest.prototype.dispatchEvent = function dispatchEvent() {throw(new Error("dispatchEvent() is not implemented in the AppMobi XMLHtppRequest object at this time."));};
+    XMLHttpRequest.prototype.abort = function abort() { throw (new Error("abort() is not implemented in the AppMobi XMLHtppRequest object at this time.")); };
+    XMLHttpRequest.prototype.addEventListener = function addEventListener(eventType, listener, useCapture) { throw (new Error("addEventListener() is not implemented in the AppMobi XMLHtppRequest object at this time.")); };
+    XMLHttpRequest.prototype.constructor = function XMLHttpRequest() { };
+    XMLHttpRequest.prototype.dispatchEvent = function dispatchEvent() { throw (new Error("dispatchEvent() is not implemented in the AppMobi XMLHtppRequest object at this time.")); };
 
     XMLHttpRequest.prototype.getAllResponseHeaders = function getAllResponseHeaders() {
         if (this.readyState == this.OPENED || this.readyState == this.UNSENT) return "";
@@ -142,7 +140,7 @@
     XMLHttpRequest.prototype.open = function (method, url, async, user, password) {
         AppMobi.debug.log("in XMLHttpRequest.prototype.open");
         //supported methods: CONNECT, DELETE, GET, HEAD, OPTIONS, POST, PUT, TRACE, or TRACK
-		/*    Empty the list of author request headers.
+        /*    Empty the list of author request headers.
 		Set the request method to method.
 		Set the request URL to url.
 		Set the request username to temp user.
@@ -160,17 +158,16 @@
 
     }
 
-    XMLHttpRequest.prototype.overrideMimeType = function overrideMimeType() {};
-    XMLHttpRequest.prototype.removeEventListener = function removeEventListener() {};
+    XMLHttpRequest.prototype.overrideMimeType = function overrideMimeType() { };
+    XMLHttpRequest.prototype.removeEventListener = function removeEventListener() { };
 
     XMLHttpRequest.prototype.send = function send(data) {
         AppMobi.debug.log("in XMLHttpRequest.prototype.send");
         this.body = data;
-		if(this.requestData.asynchronous===false)
-		{
-			throw ("Synchronous XMLHtppRequest calls are not allowed.  Please change your request to be asynchronous");
-			return;
-		}
+        if (this.requestData.asynchronous === false) {
+            throw ("Synchronous XMLHtppRequest calls are not allowed.  Please change your request to be asynchronous");
+            return;
+        }
         XMLHttpRequest.Extension.sendXMLHTTP(this);
     };
 
@@ -204,6 +201,6 @@
             'headers': null
         };
     }
-    window.nativeXMLHttpRequest=window.XMLHttpRequest;
+    window.nativeXMLHttpRequest = window.XMLHttpRequest;
     window.XMLHttpRequest = XMLHttpRequest;
 })();
