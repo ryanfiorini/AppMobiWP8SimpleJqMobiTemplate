@@ -4483,9 +4483,11 @@
                 var loaded = 0;
                 for (var j in defer) {
                     (function (j) {
+                        AppMobi.debug.log("in ajax");
                         jq.ajax({
                             url: AppMobi.webRoot + defer[j],
                             success: function (data) {
+                                AppMobi.debug.log("deferred load " + data);
                                 if (data.length == 0)
                                     return;
                                 $.ui.updateContentDiv(j, data);
@@ -4499,7 +4501,8 @@
                             },
                             error: function (msg) {
                                 //still trigger the file as being loaded to not block jq.ui.ready
-                                console.log("Error with deferred load " + AppMobi.webRoot + defer[j])
+                                AppMobi.debug.log("Error with deferred load " + AppMobi.webRoot + defer[j]);
+                                //console.log("Error with deferred load " + AppMobi.webRoot + defer[j]);
                                 loaded++;
                                 if (loaded >= toLoad) {
                                     $(document).trigger("defer:loaded");
