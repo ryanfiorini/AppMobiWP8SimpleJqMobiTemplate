@@ -2,7 +2,7 @@
 <Deployment xmlns="http://schemas.microsoft.com/windowsphone/2012/deployment" AppPlatformVersion="8.0">
   <DefaultLanguage xmlns="" code="en-US" />
   <App xmlns="" ProductID="{7b301ea4-a340-4879-b02e-4744c9c45a8a}" Title="AppMobiWP8SimpleJqMobiTemplate" RuntimeType="Silverlight" Version="1.0.0.0" Genre="apps.normal" Author="AppMobiWP8SimpleJqMobiTemplate author" Description="Sample description" Publisher="AppMobiWP8SimpleJqMobiTemplate" PublisherID="{e5b4266a-cd37-4310-b6cb-348403635ea5}">
-    <IconPath IsRelative="true" IsResource="false">Assets\ApplicationIcon.png</IconPath>
+    <IconPath IsRelative="true" IsResource="false">appmobi.png</IconPath>
     <Capabilities>
       <Capability Name="ID_CAP_NETWORKING" />
       <Capability Name="ID_CAP_MEDIALIB_AUDIO" />

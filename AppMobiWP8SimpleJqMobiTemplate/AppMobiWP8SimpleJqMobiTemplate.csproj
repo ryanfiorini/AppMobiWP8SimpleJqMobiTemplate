@@ -132,6 +132,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="appmobi.png" />
     <Content Include="AppMobiWebSource.xml" />
     <Content Include="Assets\AlignmentGrid.png" />
     <Content Include="Assets\AppBar\appbar.back.rest.png" />
@@ -155,11 +156,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="html\css\icons.css" />
+    <Content Include="html\css\jq.8tiles.css" />
     <Content Include="html\css\jq.ui.css" />
     <Content Include="html\index.html" />
     <Content Include="html\_appMobi\appmobi.js" />
     <Content Include="html\_appMobi\appmobi_local_bootstrap.js" />
-    <Content Include="html\_appMobi\jq.desktopBrowsers.js" />
+    <Content Include="html\_appMobi\jq.8tiles.js" />
     <Content Include="html\_appMobi\jq.mobi.js" />
     <Content Include="html\_appMobi\jq.ui.js" />
     <Content Include="html\_appMobi\window.js" />

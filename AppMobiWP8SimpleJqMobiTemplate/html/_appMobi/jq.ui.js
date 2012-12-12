@@ -277,19 +277,6 @@
             }
         }
 
-        // var tmp = new $.css3AnimateQueue();
-        // tmp.push({id:"animate",x:20,y:30,time:"300ms"});
-        // tmp.push({id:"animate",x:20,y:30,time:"500ms",previous:true});
-        // tmp.push({id:"animate",x:0,y:0,time:"0ms"});
-        // tmp.push({id:"animate",x:20,y:30,time:"300ms"});
-        // tmp.push({id:"animate",x:20,y:30,time:"500ms",previous:true});
-        // tmp.push(function(){reset()});
-        // tmp.run();
-
-        //uncomment for performance debug
-        //css3Animate = $.debug.type(css3Animate, 'css3Animate');
-
-
         return css3Animate;
     })();
 
@@ -689,8 +676,8 @@
             //set current scroll
             if (!firstExecution) this.adjustScroll();
             //set events
-            //if(this.refresh || this.infinite&&!jq.os.desktop) this.el.addEventListener('touchstart', this, false);
-            //this.el.addEventListener('scroll', this, false)
+            if (this.refresh || this.infinite && !jq.os.desktop) this.el.addEventListener('touchstart', this, false);
+            this.el.addEventListener('scroll', this, false)
         }
         nativeScroller.prototype.disable = function (destroy) {
             if (!this.eventsActive) return;
@@ -755,7 +742,7 @@
             }
 
             this.cY = newcY;
-            e.stopPropagation();
+            //			e.stopPropagation();
         }
         nativeScroller.prototype.showRefresh = function () {
             if (!this.refreshTriggered) {
@@ -1473,13 +1460,13 @@
             if (this.vscrollBar) {
                 this.vscrollBar.style[$.feat.cssPrefix + "Transform"] = "none";
                 this.vscrollBar.style[$.feat.cssPrefix + "Transition"] = "none";
-                this.vscrollBar.style[$.feat.cssPrefix + "Terspective"] = "none";
+                this.vscrollBar.style[$.feat.cssPrefix + "Perspective"] = "none";
                 this.vscrollBar.style[$.feat.cssPrefix + "BackfaceVisibility"] = "visible";
             }
             if (this.hscrollBar) {
                 this.hscrollBar.style[$.feat.cssPrefix + "Transform"] = "none";
                 this.hscrollBar.style[$.feat.cssPrefix + "Transition"] = "none";
-                this.hscrollBar.style[$.feat.cssPrefix + "{erspective"] = "none";
+                this.hscrollBar.style[$.feat.cssPrefix + "Perspective"] = "none";
                 this.hscrollBar.style[$.feat.cssPrefix + "BackfaceVisibility"] = "visible";
             }
 
@@ -1595,10 +1582,6 @@
         jsScroller.prototype.scrollToTop = function (time) {
             this.scrollTo({ x: 0, y: 0 }, time);
         }
-
-        //debug JS scrolling
-        //jsScroller = $.debug.type(jsScroller, 'jsScroller');
-        //return main function
         return scroller;
     })();
 })(jq);
@@ -1866,7 +1849,7 @@
                 actionsheetEl = $(elID).append(markup);
 
                 markup.get().style[$.feat.cssPrefix + 'Transition'] = "all 0ms";
-                markup.css($.feat.cssPrefix + "Transform", $.feat.cssTransformStart + "0,0" + $.feat.cssTransformEnd);
+                markup.css($.feat.cssPrefix + "Transform", "translate" + $.feat.cssTransformStart + "0,0" + $.feat.cssTransformEnd);
                 markup.css("top", window.innerHeight + "px");
                 this.el.style.overflow = "hidden";
                 markup.on("click", "a", function () { that.hideSheet() });
@@ -1874,7 +1857,7 @@
                 $(elID).append('<div id="jq_action_mask" style="position:absolute;top:0px;left:0px;right:0px;bottom:0px;z-index:9998;background:rgba(0,0,0,.4)"/>');
                 setTimeout(function () {
                     markup.get().style[$.feat.cssPrefix + 'Transition'] = "all 300ms";
-                    markup.css($.feat.cssPrefix + "Transform", $.feat.cssTransformStart + "0," + (-(markup.height())) + "px" + $.feat.cssTransformEnd);
+                    markup.css($.feat.cssPrefix + "Transform", "translate" + $.feat.cssTransformStart + "0," + (-(markup.height())) + "px" + $.feat.cssTransformEnd);
                 }, 10);
             } catch (e) {
                 alert("error adding actionsheet" + e);
@@ -1892,7 +1875,8 @@
                 setTimeout(function () {
 
                     markup.get().style[$.feat.cssPrefix + 'Transition'] = "all 300ms";
-                    markup.css($.feat.cssPrefix + "Transform", $.feat.cssTransformStart + "0,0px" + $.feat.cssTransformEnd);
+
+                    markup.css($.feat.cssPrefix + "Transform", "translate" + $.feat.cssTransformStart + "0,0px" + $.feat.cssTransformEnd);
                     setTimeout(function () {
                         markup.remove();
                         markup = null;
@@ -2321,6 +2305,7 @@
         }
     }
     $(document).ready(function () {
+        var prevEl;
         $(document.body).bind('touchstart', function (e) {
             if (!e.touches || e.touches.length == 0) return;
             var now = Date.now(), delta = now - (touch.last || now);
@@ -2335,8 +2320,10 @@
             setTimeout(longTap, longTapDelay);
             if (!touch.el.data("ignore-pressed"))
                 touch.el.addClass("selected");
+            if (prevEl && !prevEl.data("ignore-pressed"))
+                prevEl.removeClass("selected");
+            prevEl = touch.el;
         }).bind('touchmove', function (e) {
-            if (!e.touches) return;
             touch.x2 = e.touches[0].pageX;
             touch.y2 = e.touches[0].pageY;
         }).bind('touchend', function (e) {
@@ -2365,7 +2352,10 @@
                 }, 250);
             }
         }).bind('touchcancel', function () {
-            touch = {}
+            if (touch.el && !touch.el.data("ignore-pressed"))
+                touch.el.removeClass("selected");
+            touch = {};
+
         });
     });
 
@@ -2406,7 +2396,7 @@
     };
     //configuration stuff
     var inputElements = ['input', 'select', 'textarea'];
-    var autoBlurInputTypes = ['button', 'radio', 'checkbox', 'range'];
+    var autoBlurInputTypes = ['button', 'radio', 'checkbox', 'range', 'date'];
     var requiresJSFocus = $.os.ios; //devices which require .focus() on dynamic click events
     var verySensitiveTouch = $.os.blackberry; //devices which have a very sensitive touch and touchmove is easily fired even on simple taps
     var inputElementRequiresNativeTap = $.os.blackberry || ($.os.android && !$.os.chrome); //devices which require the touchstart event to bleed through in order to actually fire the click on select elements
@@ -2613,7 +2603,6 @@
 
             //this.log("click on "+tag);
             if (inputElements.indexOf(tag) !== -1 && (!this.isFocused_ || !e.target == (this.focusedElement))) {
-
                 var type = e.target && e.target.type != undefined ? e.target.type.toLowerCase() : '';
                 var autoBlur = autoBlurInputTypes.indexOf(type) !== -1;
 
@@ -3084,7 +3073,6 @@
         transitionType: "slide",
         scrollingDivs: [],
         firstDiv: "",
-        remoteJSPages: {},
         hasLaunched: false,
         launchCompleted: false,
         activeDiv: "",
@@ -3273,15 +3261,15 @@
             if (this.history.length > 0) {
                 var that = this;
                 var tmpEl = this.history.pop();
-                that.loadContent(tmpEl.target + "", 0, 1, tmpEl.transition);
-                that.transitionType = tmpEl.transition;
-                /*$.asap(
-                
-                function() {
+                $.asap(
+
+                function () {
+                    that.loadContent(tmpEl.target + "", 0, 1, tmpEl.transition);
+                    that.transitionType = tmpEl.transition;
                     //document.location.hash=tmpEl.target;
-                    //that.updateHash(tmpEl.target);
-                //for Android 4.0.x, we must touchLayer.hideAdressBar()
-                });*/
+                    that.updateHash(tmpEl.target);
+                    //for Android 4.0.x, we must touchLayer.hideAdressBar()
+                });
             }
         },
         /**
@@ -3721,8 +3709,9 @@
 
                     button = null;
                     content = null;
-                    this.scrollingDivs['modal_container'].enable();
+                    this.scrollingDivs['modal_container'].enable(!that.resetScrollers);
                     this.scrollToTop('modal');
+                    jq("#modalContainer").data("panel", id);
                 }
             } catch (e) {
                 console.log("Error with modal - " + e, this.modalWindow);
@@ -3740,6 +3729,14 @@
             jq("#jQui_modal").hide()
 
             this.scrollingDivs['modal_container'].disable();
+
+            var tmp = $($("#modalContainer").data("panel"));
+            var fnc = tmp.data("unload");
+            if (typeof fnc == "string" && window[fnc]) {
+                window[fnc](what);
+            }
+            tmp.trigger("unloadpanel");
+
         },
 
         /**
@@ -3798,7 +3795,7 @@
                 var newId = (newDiv.id) ? newDiv.id : el.replace("#", ""); //figure out the new id - either the id from the loaded div.panel or the crc32 hash
                 newDiv.id = newId;
                 if (newDiv.id != el)
-                    newDiv.setAttribute("data-crc", el);
+                    newDiv.setAttribute("data-crc", el.replace("#", ""));
             } else {
                 newDiv = myEl;
             }
@@ -4016,21 +4013,7 @@
         parseScriptTags: function (div) {
             if (!div)
                 return;
-            var scripts = div.getElementsByTagName("script");
-            div = null;
-            var that = this;
-            for (var i = 0; i < scripts.length; i++) {
-                if (scripts[i].src.length > 0 && !that.remoteJSPages[scripts[i].src]) {
-                    var doc = document.createElement("script");
-                    doc.type = scripts[i].type;
-                    doc.src = scripts[i].src;
-                    document.getElementsByTagName('head')[0].appendChild(doc);
-                    that.remoteJSPages[scripts[i].src] = 1;
-                    doc = null;
-                } else {
-                    window.eval(scripts[i].innerHTML);
-                }
-            }
+            $.parseJS(div);
         },
         /**
          * This is called to initiate a transition or load content via ajax.
@@ -4057,9 +4040,8 @@
 
             what = null;
             var that = this;
-            that.hideMask();
             var loadAjax = true;
-
+            anchor = anchor || document.createElement("a"); //Hack to allow passing in no anchor
             if (target.indexOf("#") == -1) {
                 var urlHash = "url" + crc32(target); //Ajax urls
                 var crcCheck = jq("div.panel[data-crc='" + urlHash + "']");
@@ -4067,8 +4049,13 @@
                     loadAjax = false;
                 }
                 else if (crcCheck.length > 0) {
-                    if (crcCheck.length > 0)
-                        target = "#" + crcCheck.get(0).id
+                    loadAjax = false;
+                    if (anchor.getAttribute("data-refresh-ajax") === 'true' || (anchor.refresh && anchor.refresh === true || this.isAjaxApp)) {
+                        loadAjax = true;
+                    }
+                    else {
+                        target = "#" + crcCheck.get(0).id;
+                    }
                 } else if (jq("#" + urlHash).length > 0) {
 
                     //ajax div already exists.  Let's see if we should be refreshing it.
@@ -4080,7 +4067,6 @@
                 }
             }
             if (target.indexOf("#") == -1 && loadAjax) {
-                anchor = anchor || document.createElement("a"); //Hack to allow passing in no anchor
                 this.loadAjax(target, newTab, back, transition, anchor);
             } else {
                 this.loadDiv(target, newTab, back, transition);
@@ -4121,15 +4107,17 @@
                     this.toggleSideMenu(false);
                 return;
             }
+            this.transitionType = transition;
+            var oldDiv = this.activeDiv;
+            var currWhat = what;
 
             if (what.getAttribute("data-modal") == "true" || what.getAttribute("modal") == "true") {
+                this.parsePanelFunctions(what, oldDiv);
                 return this.showModal(what.id);
             }
 
 
-            this.transitionType = transition;
-            var oldDiv = this.activeDiv;
-            var currWhat = what;
+
 
             if (oldDiv == currWhat) //prevent it from going to itself
                 return;
@@ -4213,7 +4201,7 @@
                 this.setBackButtonVisibility(true);
             this.activeDiv = what;
             if (this.scrollingDivs[this.activeDiv.id]) {
-                this.scrollingDivs[this.activeDiv.id].enable();
+                this.scrollingDivs[this.activeDiv.id].enable(!this.resetScrollers);
             }
         },
         /**
@@ -4246,7 +4234,7 @@
                     var doReturn = false;
 
                     //Here we check to see if we are retaining the div, if so update it
-                    if (jq("#" + urlHash.length > 0)) {
+                    if (jq("#" + urlHash).length > 0) {
                         that.updateContentDiv(urlHash, xmlhttp.responseText);
                         jq("#" + urlHash).get(0).title = anchor.title ? anchor.title : target;
                     } else if (anchor.getAttribute("data-persist-ajax") || that.isAjaxApp) {
@@ -4271,11 +4259,17 @@
                     var div = document.createElement("div");
                     div.innerHTML = xmlhttp.responseText;
                     that.parseScriptTags(div);
-                    if (doReturn)
+
+                    if (doReturn) {
+                        if (that.showLoading)
+                            that.hideMask();
                         return;
+                    }
 
-                    return that.loadContent("#" + urlHash);
-
+                    that.loadContent("#" + urlHash);
+                    if (that.showLoading)
+                        that.hideMask();
+                    return null;
                 }
             };
             ajaxUrl = target;
@@ -4456,16 +4450,16 @@
                 if (el.parentNode && el.parentNode.id != "content") {
                     el.parentNode.removeChild(el);
                     var id = el.id;
-                    this.addDivAndScroll(tmp);
                     if (tmp.getAttribute("selected"))
                         this.firstDiv = jq("#" + id).get(0);
+                    this.addDivAndScroll(tmp);
                 } else if (!el.parsedContent) {
                     el.parsedContent = 1;
                     el.parentNode.removeChild(el);
                     var id = el.id;
-                    this.addDivAndScroll(tmp);
                     if (tmp.getAttribute("selected"))
                         this.firstDiv = jq("#" + id).get(0);
+                    this.addDivAndScroll(tmp);
                 }
                 if (el.getAttribute("data-defer")) {
                     defer[id] = el.getAttribute("data-defer");
@@ -4483,11 +4477,9 @@
                 var loaded = 0;
                 for (var j in defer) {
                     (function (j) {
-                        AppMobi.debug.log("in ajax");
                         jq.ajax({
                             url: AppMobi.webRoot + defer[j],
                             success: function (data) {
-                                AppMobi.debug.log("deferred load " + data);
                                 if (data.length == 0)
                                     return;
                                 $.ui.updateContentDiv(j, data);
@@ -4501,8 +4493,7 @@
                             },
                             error: function (msg) {
                                 //still trigger the file as being loaded to not block jq.ui.ready
-                                AppMobi.debug.log("Error with deferred load " + AppMobi.webRoot + defer[j]);
-                                //console.log("Error with deferred load " + AppMobi.webRoot + defer[j]);
+                                console.log("Error with deferred load " + AppMobi.webRoot + defer[j])
                                 loaded++;
                                 if (loaded >= toLoad) {
                                     $(document).trigger("defer:loaded");
@@ -4552,7 +4543,7 @@
                     //go to activeDiv
                     var firstPanelId = that.getPanelId(defaultHash);
                     //that.history=[{target:'#'+that.firstDiv.id}];   //set the first id as origin of path
-                    if (firstPanelId.length > 0 && that.loadDefaultHash && firstPanelId != ("#" + that.firstDiv.id)) {
+                    if (firstPanelId.length > 0 && that.loadDefaultHash && firstPanelId != ("#" + that.firstDiv.id) && $(firstPanelId).length > 0) {
                         that.loadContent(defaultHash, true, false, 'none'); //load the active page as a newTab with no transition
                     } else {
                         previousTarget = "#" + that.firstDiv.id;
@@ -4666,12 +4657,11 @@
         //anchors
         if (theTarget.tagName !== "undefined" && theTarget.tagName.toLowerCase() == "a") {
 
-            console.log("Called");
             var custom = (typeof jq.ui.customClickHandler == "function") ? jq.ui.customClickHandler : false;
             if (custom !== false) {
-                e.preventDefault();
-                jq.ui.customClickHandler(theTarget);
-                return;
+                if (jq.ui.customClickHandler(theTarget))
+                    return e.preventDefault();
+
             }
             if (theTarget.href.toLowerCase().indexOf("javascript:") !== -1 || theTarget.getAttribute("data-ignore")) {
                 return;
@@ -4703,7 +4693,7 @@
                 href = href.substring(prefix.length + 1);
             }
             //empty links
-            if (href == "#" || (href.length == 0 && theTarget.hash.length == 0))
+            if (href == "#" || (href.indexOf("#") === href.length - 1) || (href.length == 0 && theTarget.hash.length == 0))
                 return;
 
             //internal links
@@ -4752,7 +4742,6 @@
     });
 
 })();
-
 (function ($ui) {
 
     function fadeTransition(oldDiv, currDiv, back) {

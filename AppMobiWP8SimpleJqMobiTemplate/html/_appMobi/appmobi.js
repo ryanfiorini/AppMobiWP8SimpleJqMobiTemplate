@@ -23,7 +23,8 @@ AppMobi = {
     },
     _constructors: [],
     jsVersion: '3.4.0',
-    revision: 8
+    revision: 8,
+    sub: 2
 };
 
 /**
@@ -300,8 +301,8 @@ AppMobi.Contacts.prototype.getContacts = function () {
     AppMobi.exec("AppMobiContacts~GetContacts~");
 }
 
-AppMobi.Contacts.prototype.addContact = function (remoteId, first, last, street, city, state, zip, country, phone, email) {
-    AppMobi.exec("AppMobiContacts~AddContact~", remoteId, first, last, street, city, state, zip, country, phone, email);
+AppMobi.Contacts.prototype.addContact = function (first, last, street, city, state, zip, country, phone, email) {
+    AppMobi.exec("AppMobiContacts~AddContact~", first, last, street, city, state, zip, country, phone, email);
 }
 
 AppMobi.Contacts.prototype.chooseContact = function () {
@@ -762,6 +763,7 @@ AppMobi.Speech.prototype.recognize = function (longPause, language) {
 };
 
 AppMobi.Speech.prototype.stopRecording = function () {
+    AppMobi.exec("~AppMobiSpeech~stopRecording~");
 };
 
 AppMobi.Speech.prototype.vocalize = function (text, voiceName, language) {
@@ -874,22 +876,31 @@ AppMobi.Audio = function () {
 };
 
 AppMobi.Audio.prototype.startPlaying = function (recURL) {
-    AppMobi.stubEvent('player.audio.error');
+    AppMobi.exec("AppMobiAudio~StartPlaying~", recURL);
 };
 
 AppMobi.Audio.prototype.stopPlaying = function () {
+    AppMobi.exec("AppMobiAudio~StopPlaying~");
 };
 
 AppMobi.Audio.prototype.pausePlaying = function () {
+    AppMobi.exec("AppMobiAudio~PausePlaying~");
 };
 
 AppMobi.Audio.prototype.continuePlaying = function () {
+    AppMobi.exec("~AppMobiAudio~ContinuePlaying~");
 };
 
 AppMobi.Audio.prototype.startRecording = function (format, samplingRate, channels) {
+    AppMobi.exec("AppMobiAudio~StartRecording~", format, samplingRate, channels);
+};
+
+AppMobi.Audio.prototype.addSound = function (sound) {
+    AppMobi.exec("AppMobiAudio~AddSound~", sound);
 };
 
 AppMobi.Audio.prototype.stopRecording = function () {
+    AppMobi.exec("AppMobiAudio~StopRecording~");
 };
 
 AppMobi.Audio.prototype.pauseRecording = function () {
@@ -2235,7 +2246,7 @@ AppMobi.redirectMouseToTouch = function (type, originalEvent) {
 AppMobi.emulateTouchEvents = function () {
     var ee = document;
     document.mouseMoving = false;
-    document.onmousedown = function (e) {
+    document.addEventListener("MSPointerDown", function (e) {
         try {
             this.mouseMoving = true;
             var touchevt = AppMobi.redirectMouseToTouch("touchstart", e);
@@ -2243,8 +2254,9 @@ AppMobi.emulateTouchEvents = function () {
                 document.ontouchstart(touchevt);
             }
         } catch (e) { }
-    }
-    document.onmouseup = function (e) {
+    }, false);
+
+    document.addEventListener("MSPointerUp", function (e) {
         try {
             this.mouseMoving = false;
             var touchevt = AppMobi.redirectMouseToTouch("touchend", e);
@@ -2253,8 +2265,9 @@ AppMobi.emulateTouchEvents = function () {
             }
         }
         catch (e) { }
-    }
-    document.onmousemove = function (e) {
+    }, false);
+
+    document.addEventListener("MSPointerMove", function (e) {
         try {
             if (!this.mouseMoving) return;
             var touchevt = AppMobi.redirectMouseToTouch("touchmove", e);
@@ -2263,7 +2276,8 @@ AppMobi.emulateTouchEvents = function () {
             }
         }
         catch (e) { }
-    }
+    }, false);
+
 }
 //only emulate if browser does not handle touch events
 if (!('ontouchstart' in document.documentElement)) {

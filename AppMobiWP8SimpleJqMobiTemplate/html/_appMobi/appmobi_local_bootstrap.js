@@ -1,28 +1,6 @@
-AppMobiBootstrapper = { version: '1.2' };
+AppMobiBootstrapper = { version: '1.3' };
 
 var head = document.getElementsByTagName('head')[0];
-
-//try to load localhost (XDK/iOS/Android) appmobi.js
-function loadLocalhostScript() {
-    var script = document.createElement("script");
-    script.type = "text/javascript";
-    //if fail, remove and try to load cloud-based for web
-    script.onerror = function () {
-        head.removeChild(script);
-        loadFileScript();
-    }
-    script.onload = function () {
-        console.log('got localhost appmobi.js');
-    }
-    script.src = "http://localhost:58888/_appMobi/appmobi.js";
-    head.appendChild(script);
-};
-
-if (typeof AppMobiLocalFlag == "undefined") {
-    // commented out the localhost script for long load times.  Will come back to this.
-    //loadLocalhostScript();
-    loadFileScript();
-}
 
 //try to load file-based for windows
 function loadFileScript() {
@@ -31,7 +9,7 @@ function loadFileScript() {
     //if fail, remove and try to load cloud-based for web
     script.onerror = function () {
         head.removeChild(script);
-        loadWebScript();
+        loadLocalhostScript();
     }
     script.onload = function () {
         console.log('got file-based appmobi.js');
@@ -39,6 +17,26 @@ function loadFileScript() {
     script.src = "_appMobi/appmobi.js";
     head.appendChild(script);
 }
+
+if (typeof AppMobiLocalFlag == "undefined") {
+    loadFileScript();
+}
+
+//try to load localhost (XDK/iOS/Android) appmobi.js
+function loadLocalhostScript() {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    //if fail, remove and try to load cloud-based for web
+    script.onerror = function () {
+        head.removeChild(script);
+        loadWebScript();
+    }
+    script.onload = function () {
+        console.log('got localhost appmobi.js');
+    }
+    script.src = "http://localhost:58888/_appMobi/appmobi.js";
+    head.appendChild(script);
+};
 
 //try to load cloud-based for web
 function loadWebScript() {
@@ -100,7 +98,7 @@ if (typeof AppMobiLocalFlag != "undefined") {
         },
         _constructors: [],
         jsVersion: '3.4.0',
-        revision: 4
+        revision: 8
     };
 
     /**
@@ -385,7 +383,7 @@ if (typeof AppMobiLocalFlag != "undefined") {
         }
 
         var index = 0;
-        var oldest = new Date().toUTCString();
+        var oldest = new Date();
         var soundarray = AppMobi.player.sounds[strRelativeFileURL];
         for (var a = 0; a < soundarray.length; a++) {
             if (soundarray[a].lasttime < oldest) {
@@ -407,10 +405,11 @@ if (typeof AppMobiLocalFlag != "undefined") {
             soundarray[index].player.currentTime = 0;
         }
         soundarray[index].player.play();
-        soundarray[index].lasttime = new Date().toUTCString();
+        soundarray[index].lasttime = new Date();
     };
 
     AppMobi.Player.prototype.loadSound = function (strRelativeFileURL, count) {
+        if (!count) count = 1;
         AppMobi.player.sounds[strRelativeFileURL] = [];
         var soundarray = AppMobi.player.sounds[strRelativeFileURL];
         for (var a = 0; a < count; a++) {
@@ -418,6 +417,10 @@ if (typeof AppMobiLocalFlag != "undefined") {
             soundarray[a].player = new Audio(strRelativeFileURL);
             soundarray[a].player.load();
             soundarray[a].playing = false;
+            soundarray[a].player.id = a;
+            soundarray[a].player.addEventListener("timeupdate", function (e) {
+                console.log(strRelativeFileURL + '[' + this.id + '] currentTime:' + this.currentTime);
+            }, false);
             soundarray[a].lasttime = 0;
         }
     };
@@ -441,6 +444,7 @@ if (typeof AppMobiLocalFlag != "undefined") {
         if (AppMobi.player.currentTime != 0) AppMobi.player.audio.player.currentTime = AppMobi.player.currentTime;
         AppMobi.player.audio.player.loop = boolLoop;
         AppMobi.player.audio.player.play();
+        AppMobi.player.audio.player.playing = true;
         AppMobi.player.audio.playing = true;
     };
 
@@ -449,11 +453,11 @@ if (typeof AppMobiLocalFlag != "undefined") {
 
         if (AppMobi.player.audio.player.playing == true) {
             AppMobi.player.audio.player.pause();
-            AppMobi.player.audio.playing = false;
+            AppMobi.player.audio.player.playing = false;
         }
         else {
             AppMobi.player.audio.player.play();
-            AppMobi.player.audio.playing = true;
+            AppMobi.player.audio.player.playing = true;
         }
     };
 
@@ -1188,11 +1192,12 @@ if (typeof AppMobiLocalFlag != "undefined") {
         srsf.style.overflow = "hidden";
         srsf.style.border = "0px";
         srsf.style.zIndex = 15000;
+        srsf.style.background = "#FFF";
         document.body.appendChild(srsf);
 
         var crsi = document.createElement('image');
         crsi.id = "em-crs";
-        crsi.src = "appMobi/remote_close.png";
+        crsi.imgdata = 'data:image/png;base64, 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';
         crsi.onclick = AppMobi.device.closeRemoteSite;
         crsi.style.position = "absolute";
         crsi.style.display = "none";
@@ -1261,12 +1266,12 @@ if (typeof AppMobiLocalFlag != "undefined") {
     };
 
     AppMobi.Device.prototype.showRemoteSite = function (strURL, closePortX, closePortY, closeWidth, closeHeight) {
-        AppMobi.device.showRemoteSiteExt(strURL, closePortX, closePortY, closePortX, closePortY, closeWidth, closeHeight, "appMobi/remote_close.png");
+        AppMobi.device.showRemoteSiteExt(strURL, closePortX, closePortY, closePortX, closePortY, closeWidth, closeHeight, "");
     };
 
     AppMobi.Device.prototype.showRemoteSiteExt = function (strURL, closePortX, closePortY, closeLandX, closeLandY, closeWidth, closeHeight, closeImage) {
 
-        if (typeof (closeImage) != "string" || closeImage.length == 0) closeImage = "appMobi/remote_close.png";
+        if (typeof (closeImage) != "string" || closeImage.length == 0) closeImage = document.getElementById('em-crs').imgdata;
         document.getElementById('em-crs').style.left = closePortX + "px";
         document.getElementById('em-crs').style.top = closePortY + "px";
         document.getElementById('em-crs').src = closeImage;
@@ -1801,14 +1806,13 @@ if (typeof AppMobiLocalFlag != "undefined") {
     }
 
     AppMobi.FacebookInternal.prototype.busyError = function () {
-        console.log("appMobi.facebook.busy = true;");
+        if (debug) console.log("appMobi.facebook.busy = true;");
         var e = document.createEvent('Events');
         e.initEvent('appMobi.facebook.busy', true, true);
         document.dispatchEvent(e);
     }
 
     AppMobi.FacebookInternal.prototype.initialize = function () {
-        console.log("Initialzing Facebook Communication Frame");
         var fbf = document.createElement('iframe');
         fbf.id = "appMobi_Facebook_Communication_Frame";
         fbf.style.display = "none";
@@ -1914,7 +1918,7 @@ if (typeof AppMobiLocalFlag != "undefined") {
         var dataToSend = encodeURIComponent(AppMobi.facebook.internal.base64Encode(JSON.stringify(apiDat)));
         var callback = encodeURIComponent(AppMobi.webRoot + "amfacebook.html");
         document.getElementById('appMobi_Facebook_Communication_Frame').style.display = 'block';
-        AppMobi.facebook.internal.setCommunicationFrameUrl("//fb.appmobi.com/facebook/default.aspx?cmd=fbxdk&apicall=true&appname=" + AppMobi.app + "&data=" + dataToSend + "&callback=" + callback);
+        AppMobi.facebook.internal.setCommunicationFrameUrl((window.location.href.substr(0, 4) != "http" ? "http://" : "//") + "fb.appmobi.com/facebook/default.aspx?cmd=fbxdk&apicall=true&appname=" + AppMobi.app + "&data=" + dataToSend + "&callback=" + callback);
     }
 
     AppMobi.FacebookInternal.prototype.base64Encode = function (input) {
@@ -2124,14 +2128,18 @@ if (typeof AppMobiLocalFlag != "undefined") {
             try {
                 this.mouseMoving = true;
                 var touchevt = AppMobi.redirectMouseToTouch("touchstart", e);
-                if (document.ontouchstart) document.ontouchstart(touchevt);
+                if (document.ontouchstart) {
+                    document.ontouchstart(touchevt);
+                }
             } catch (e) { }
         }
         document.onmouseup = function (e) {
             try {
                 this.mouseMoving = false;
                 var touchevt = AppMobi.redirectMouseToTouch("touchend", e);
-                if (document.ontouchend) document.ontouchend(touchevt);
+                if (document.ontouchend) {
+                    document.ontouchend(touchevt);
+                }
             }
             catch (e) { }
         }
@@ -2139,12 +2147,17 @@ if (typeof AppMobiLocalFlag != "undefined") {
             try {
                 if (!this.mouseMoving) return;
                 var touchevt = AppMobi.redirectMouseToTouch("touchmove", e);
-                if (document.ontouchmove) document.ontouchmove(touchevt);
+                if (document.ontouchmove) {
+                    document.ontouchmove(touchevt);
+                }
             }
             catch (e) { }
         }
     }
-    AppMobi.emulateTouchEvents();
+    //only emulate if browser does not handle touch events
+    if (!('ontouchstart' in document.documentElement)) {
+        AppMobi.emulateTouchEvents();
+    }
 
     //Event Stub Support function
     AppMobi.stubEvent = function (event_suffix, extra) {
@@ -2207,10 +2220,22 @@ if (typeof AppMobiLocalFlag != "undefined") {
     //DirectCanvas compatibility
     AppMobi.context = {};
     AppMobi.context.include = AppMobi.inject;
+    AppMobi.context.startBackgroundSound = function (sound, looping) {
+        AppMobi.player.startAudio(sound, looping);
+    }
+    AppMobi.context.toggleBackgroundSound = function () {
+        AppMobi.player.toggleAudio();
+    }
+    AppMobi.context.stopBackgroundSound = function () {
+        AppMobi.player.stopAudio();
+    }
     AppMobi.context.playSound = function (sound) {
         AppMobi.player.playSound(sound);
     }
     AppMobi.context.loadSound = function (sound, count) {
+        AppMobi.player.loadSound(sound, count);
+    }
+    AppMobi.context.loadPolySound = function (sound, count) {
         AppMobi.player.loadSound(sound, count);
     }
     AppMobi.context.hideLoadingScreen = function () { };
@@ -2385,7 +2410,7 @@ if (typeof AppMobiLocalFlag != "undefined") {
     AppMobi.helper.getOsType = function () {
         if (AppMobi.ischrome)
             return "chrome";
-        else if (AppMobi.facebook)
+        else if (AppMobi.isfacebook)
             return "facebook";
         else if (AppMobi.isweb)
             return "web";

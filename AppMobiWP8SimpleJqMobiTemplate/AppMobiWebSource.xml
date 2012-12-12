@@ -5,7 +5,7 @@
 
   <FilePath Value="html\_appMobi\appmobi.js"/>
   <FilePath Value="html\_appMobi\appmobi_local_bootstrap.js"/>
-  <FilePath Value="html\_appMobi\jq.desktopBrowsers.js"/>
+  <FilePath Value="html\_appMobi\jq.8tiles.js"/>
   <FilePath Value="html\_appMobi\jq.mobi.js"/>
   <FilePath Value="html\_appMobi\jq.ui.js"/>
   <FilePath Value="html\_appMobi\window.js"/>
@@ -13,5 +13,6 @@
 
   <FilePath Value="html\css\icons-webfont.eot"/>
   <FilePath Value="html\css\icons.css"/>
+  <FilePath Value="html\css\jq.8tiles.css"/>
   <FilePath Value="html\css\jq.ui.css"/>
 </AppMobiWebSource>
