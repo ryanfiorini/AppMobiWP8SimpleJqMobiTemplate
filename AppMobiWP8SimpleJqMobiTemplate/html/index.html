@@ -48,6 +48,9 @@
                 AppMobi.device.setAutoRotate(false);
                 //AppMobi.device.setRotateOrientation(orientation);
                 AppMobi.display.useViewport(portraitWidth, landscapeWidth);
+
+                //hide splash screen
+                AppMobi.device.hideSplashScreen();
             };
             document.addEventListener("appMobi.device.ready", onDeviceReadyStrap, false);
 

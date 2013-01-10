@@ -24,6 +24,14 @@ namespace AppMobiWP8SimpleJqMobiTemplate
 
             // appMobiServer will serve up the files
             amWebView = new appMobiWebView(webView, phoneApplicationPage, "http://localhost:5888/index.html");
+
+            // Implement splash screen handler
+            amWebView.HideSplashScreen += amWebView_HideSplashScreen;
+        }
+
+        void amWebView_HideSplashScreen(object sender, EventArgs e)
+        {
+            LayoutRoot.Children.Remove(this.SplashScreen);
         }
     }
 }
